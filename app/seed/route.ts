@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 import { db } from '@vercel/postgres';
-import { invoices, customers, revenue, users } from '@/app/lib/placeholder-data';
+import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
 const client = await db.connect();
 
 async function seedUsers() {
-  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
+  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
   await client.sql`
     CREATE TABLE IF NOT EXISTS users (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -23,14 +23,14 @@ async function seedUsers() {
         VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
         ON CONFLICT (id) DO NOTHING;
       `;
-    })
+    }),
   );
 
   return insertedUsers;
 }
 
 async function seedInvoices() {
-  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
+  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await client.sql`
     CREATE TABLE IF NOT EXISTS invoices (
@@ -48,15 +48,15 @@ async function seedInvoices() {
         INSERT INTO invoices (customer_id, amount, status, date)
         VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
         ON CONFLICT (id) DO NOTHING;
-      `
-    )
+      `,
+    ),
   );
 
   return insertedInvoices;
 }
 
 async function seedCustomers() {
-  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
+  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await client.sql`
     CREATE TABLE IF NOT EXISTS customers (
@@ -73,8 +73,8 @@ async function seedCustomers() {
         INSERT INTO customers (id, name, email, image_url)
         VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
         ON CONFLICT (id) DO NOTHING;
-      `
-    )
+      `,
+    ),
   );
 
   return insertedCustomers;
@@ -94,15 +94,19 @@ async function seedRevenue() {
         INSERT INTO revenue (month, revenue)
         VALUES (${rev.month}, ${rev.revenue})
         ON CONFLICT (month) DO NOTHING;
-      `
-    )
+      `,
+    ),
   );
 
   return insertedRevenue;
 }
 
 export async function GET() {
-  try { 
+  // return Response.json({
+  //   message:
+  //     'Uncomment this file and remove this line. You can delete this file when you are finished.',
+  // });
+  try {
     await client.sql`BEGIN`;
     await seedUsers();
     await seedCustomers();
