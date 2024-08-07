@@ -16,7 +16,6 @@ export default async function Page({ params }:Params ) {
       fetchCustomers()
    ]) 
 
-   
    return(
       <main>
          <Breadcrumbs
